@@ -21,7 +21,10 @@ import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
 /**
- * Created by KangLong on 2017/10/17.
+ * 存储Cookie到本地
+ *
+ * @author KangLong
+ * @date 2017/10/17
  */
 
 public class PersistentCookieStore {

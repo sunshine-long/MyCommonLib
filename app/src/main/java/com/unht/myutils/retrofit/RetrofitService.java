@@ -8,7 +8,9 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 /**
- * Created by 康龙 on 2017/5/9.
+ * 为Retrofit框架提供接口请求注解
+ * @author 康龙
+ * @date 2017/5/9
  */
 
 public interface RetrofitService {

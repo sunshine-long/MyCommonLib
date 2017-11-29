@@ -9,7 +9,10 @@ import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
 
 /**
- * Created by KangLong on 2017/10/17.
+ * Cookie管理类
+ *
+ * @author KangLong
+ * @date 2017/10/17
  */
 
 public class CookieManger implements CookieJar {
@@ -22,7 +25,7 @@ public class CookieManger implements CookieJar {
 
     public CookieManger(Context context) {
         mContext = context;
-        if (cookieStore == null ) {
+        if (cookieStore == null) {
             cookieStore = new PersistentCookieStore(mContext);
         }
 
@@ -39,7 +42,7 @@ public class CookieManger implements CookieJar {
 
     @Override
     public List<Cookie> loadForRequest(HttpUrl url) {
-        List<Cookie> cookies =cookieStore.get(url);
+        List<Cookie> cookies = cookieStore.get(url);
         return cookies;
     }
 

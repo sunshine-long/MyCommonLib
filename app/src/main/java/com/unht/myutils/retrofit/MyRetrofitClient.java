@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * @author KangLong
  *         date 2017/5/8
- *         description 框架用Retrofit 请求快速框架
+ *         description 采用快速 工厂模式/单例 构建Retrofit请求类
  */
 public class MyRetrofitClient {
     //IP地址
@@ -41,8 +41,17 @@ public class MyRetrofitClient {
         return myRetrofitClient;
     }
 
+    private MyRetrofitClient(){
+
+    }
+
+
     private MyRetrofitClient(Context context) {
         CookieJar cookieJar = new CookieManger(context);
+        //添加token 在header中
+        HttpCommonInterceptor commonInterceptor = new HttpCommonInterceptor.Builder()
+                .addHeaderParams("token","android")
+                .build();
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
                 .addInterceptor(new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {

@@ -10,8 +10,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 import com.yanzhenjie.permission.AndPermission;
@@ -33,28 +35,29 @@ public class CameraUtils {
     private static final String TAG = "CameraUtils";
     //相机权限
     public static final int PERMISSION_RESQUEST_CODE = 300;
-    //相机
+    //调用系统相机请求码
     public static final int GET_IMAGE_BY_CAMERA = 0;
-    //本地图片
+    //打开本地图片请求码
     public static final int GET_IMAGE_FROM_PHONE = 1;
-    //剪切图片
+    //调用图片剪切请求码
     public static final int CROP_IMAGE = 2;
-    //打开视频
+    //打开本地视频请求码
     public static final int OPEN_VIDEO = 3;
-    //相机拍照后的URI
+    //相机拍照后图片的的URI
     public static Uri imageUriFromCamera;
     //图片剪切后的URI
     public static Uri cropImageUri;
-    // 拍照路径
+    // 文件存储目录
     public static String SAVED_IMAGE_DIR_PATH =
             Environment.getExternalStorageDirectory().getPath()
                     + "/imageRecognize/IMG";
+    // 固定文件名
     private static String fileName;
 
     /**
      * 打开相机,拍照后返回存入URI
      *
-     * @param thiz
+     * @param thiz 调用activity
      */
     public static void openCameraImage(Activity thiz) {
         imageUriFromCamera = createImagePathUri(thiz);
@@ -73,7 +76,7 @@ public class CameraUtils {
     /**
      * 打开相册,选择图片后返回URI
      *
-     * @param thiz
+     * @param thiz 调用activity
      */
     public static void openLocalImage(Activity thiz) {
         Intent intent = new Intent();
@@ -90,20 +93,22 @@ public class CameraUtils {
     }
 
     /**
-     * 剪切图片后存入URI
+     * 调用系统剪切 剪切图片
      *
-     * @param thiz
-     * @param srcUri
+     * @param thiz    启动的activity
+     * @param srcUri  剪切前图片的路径
+     * @param outputX 剪切后图片的长
+     * @param outputY 剪切后图片的宽
      */
-    public static void cropImageSquare(Activity thiz, Uri srcUri, int outputXY) {
+    public static void cropImageSquare(Activity thiz, Uri srcUri, int outputX, int outputY) {
         cropImageUri = createImagePathUri(thiz);
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(srcUri, "image/*");
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 2);
         intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", outputXY * 2);
-        intent.putExtra("outputY", outputXY);
+        intent.putExtra("outputX", outputX);
+        intent.putExtra("outputY", outputY);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, cropImageUri);
         intent.putExtra("return-data", false);
         thiz.startActivityForResult(intent, CROP_IMAGE);
@@ -123,7 +128,11 @@ public class CameraUtils {
         thiz.startActivityForResult(intent, CROP_IMAGE);
     }
 
-
+    /**
+     * 打开系统视频目录
+     *
+     * @param thiz 调用的activity
+     */
     public static void openViedo(Activity thiz) {
         Intent intent = new Intent();
         intent.setType("video/*");
@@ -135,8 +144,8 @@ public class CameraUtils {
     /**
      * 通过时间创建图片URI
      *
-     * @param context
-     * @return
+     * @param context 启动相机的上下文
+     * @return 图片的存储路径
      */
     public static Uri createImagePathUri(Context context) {
         Uri imageFilePath = null;
@@ -144,7 +153,7 @@ public class CameraUtils {
         if (!appDir.exists()) {
             appDir.mkdirs();
         }
-        fileName = System.currentTimeMillis()+".jpg";
+        fileName = System.currentTimeMillis() + ".jpg";
         File file = new File(appDir, fileName);
         try {
             file.createNewFile();
@@ -159,7 +168,8 @@ public class CameraUtils {
 
     /**
      * 获取相机权限
-     * @param context
+     *
+     * @param context 请求权限的上下文
      */
     public static void requestPermission(final Context context) {
         AndPermission.with(context).requestCode(PERMISSION_RESQUEST_CODE)
@@ -238,12 +248,13 @@ public class CameraUtils {
 
     /**
      * 启动Urop剪切图片
-     * @param activity
-     * @param sourceFilePath
-     * @param requestCode
-     * @param aspectRatioX
-     * @param aspectRatioY
-     * @return
+     *
+     * @param activity       目标activity
+     * @param sourceFilePath 剪切前图片的路径
+     * @param requestCode    请求的code
+     * @param aspectRatioX   剪切后图片的长
+     * @param aspectRatioY   剪切后图片的宽
+     * @return 剪切后图片的路径
      */
     public static String startUCrop(Activity activity, String sourceFilePath, int requestCode, float aspectRatioX, float aspectRatioY) {
         Uri sourceUri = Uri.fromFile(new File(sourceFilePath));
@@ -264,4 +275,14 @@ public class CameraUtils {
         uCrop.start(activity, requestCode);
         return cameraScalePath;
     }
+
+    /**
+     * 配合Glide 实现将文件显示到ImageView，跳过转换成bitmap的过程
+     * @param imageView 目标视图
+     * @param file 图片文件
+     */
+    public static void setPicToView(Activity activity,ImageView imageView, File file) {
+        Glide.with(activity).load(CameraUtils.cropImageUri).into(imageView);
+    }
+
 }
