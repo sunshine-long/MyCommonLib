@@ -1,7 +1,7 @@
 package com.unht.myutils.retrofit;
 
 
-import com.unht.myutils.base.BaseEntity;
+import com.unht.myutils.base.BaseResponse;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -22,7 +22,7 @@ public interface RetrofitService {
      * @return
      */
     @GET("/fitness/coach/login/code.jhtml")
-    Observable<BaseEntity<String>> getVerificatCode(@Query("mobile") String mobile);
+    Observable<BaseResponse<String>> getVerificatCode(@Query("mobile") String mobile);
 
 
 }

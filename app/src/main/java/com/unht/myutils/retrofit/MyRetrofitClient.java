@@ -59,7 +59,7 @@ public class MyRetrofitClient {
                     public void log(String message) {
                         LogUtils.d(TAG, message);
                     }
-                }).setLevel(HttpLoggingInterceptor.Level.BASIC))
+                }).setLevel(HttpLoggingInterceptor.Level.BODY))
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .build();

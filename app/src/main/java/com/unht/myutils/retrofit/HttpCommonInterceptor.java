@@ -2,6 +2,8 @@ package com.unht.myutils.retrofit;
 
 import android.util.Log;
 
+import com.unht.myutils.utils.LitePrefUtils;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +15,13 @@ import okhttp3.Response;
 
 /**
  * 添加统一的请求拦截器
- * @author Marlo
+ * @author Marlon
  * @date 2017/11/29
  */
 
 public class HttpCommonInterceptor implements Interceptor {
     private Map<String,String> mHeaderParamsMap = new HashMap<>();
+
     public HttpCommonInterceptor() {
     }
     @Override
