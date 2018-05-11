@@ -2,6 +2,7 @@ package com.unht.myutils.retrofit;
 
 import android.content.Context;
 
+import com.unht.myutils.app.ApiConfig;
 import com.unht.myutils.utils.LogUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -19,16 +20,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
  *         description 采用快速 工厂模式/单例 构建Retrofit请求类
  */
 public class MyRetrofitClient {
-    //IP地址
-    //本地
-    public static final String BASE_URL = "http://192.168.2.110:8080/";
-    //云上
-//    public static final String BASE_URL = "http://www.sichuanxinge.com/";
+
 
     private static final long TIMEOUT = 300;
     private static final String TAG = "MyRetrofitClient";
     private static MyRetrofitClient myRetrofitClient;
     private Retrofit retrofit;
+    private OkHttpClient mOkHttpClient;
+    private HttpCommonInterceptor mCommonInterceptor;
+    private CookieJar mCookieJar;
 
     public static MyRetrofitClient getInstance(Context context) {
         if (myRetrofitClient == null) {
@@ -41,19 +41,24 @@ public class MyRetrofitClient {
         return myRetrofitClient;
     }
 
-    private MyRetrofitClient(){
+
+    private MyRetrofitClient(Context context) {
+        initOkhttp();
 
     }
 
-
-    private MyRetrofitClient(Context context) {
-        CookieJar cookieJar = new CookieManger(context);
+    /**
+     * 初始化 OkHttpClient
+     *
+     */
+    private void initOkhttp() {
+        mCookieJar = new CookieManger();
         //添加token 在header中
-        HttpCommonInterceptor commonInterceptor = new HttpCommonInterceptor.Builder()
-                .addHeaderParams("token","android")
+        mCommonInterceptor = new HttpCommonInterceptor.Builder()
+                .addHeaderParams("token", "android")
                 .build();
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .cookieJar(cookieJar)
+        mOkHttpClient = new OkHttpClient.Builder()
+                .cookieJar(mCookieJar)
                 .addInterceptor(new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
                     @Override
                     public void log(String message) {
@@ -63,15 +68,22 @@ public class MyRetrofitClient {
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .build();
+        initRetrofit();
+    }
+
+    /**
+     * 初始化retrofit
+     */
+    private void initRetrofit() {
         retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(okHttpClient)
+                .baseUrl(ApiConfig.BASE_URL)
+                .client(mOkHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
 
-    public RetrofitService createService() {
-        return retrofit.create(RetrofitService.class);
+    public <T> T createService(Class<T> service) {
+        return retrofit.create(service);
     }
 }

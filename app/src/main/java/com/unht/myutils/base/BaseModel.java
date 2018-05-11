@@ -20,16 +20,16 @@ import okhttp3.RequestBody;
 public class BaseModel {
     private static final String TAG = "BaseModel";
     protected RetrofitService retrofitServicer;
-    protected Map<String,Object> mParams = new HashMap<>();
+    protected Map<String, Object> mParams = new HashMap<>();
     protected Gson gson = new Gson();
     protected RequestBody mBody;
     protected Context mContext;
     protected String token;
 
     public BaseModel(Context context) {
-        retrofitServicer = MyRetrofitClient.getInstance(context).createService();
+        retrofitServicer = MyRetrofitClient.getInstance(context).createService(RetrofitService.class);
         this.mContext = context;
-        token = (String) LitePrefUtils.getInstance(context).getValue("token","");
+        token = (String) LitePrefUtils.getInstance(context).getValue("token", "");
     }
 
 }
