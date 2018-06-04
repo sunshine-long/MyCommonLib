@@ -1,9 +1,9 @@
 package com.unht.myutils.retrofit;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.unht.myutils.app.ApiConfig;
-import com.unht.myutils.utils.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,65 +16,61 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author KangLong
- *         date 2017/5/8
- *         description 采用快速 工厂模式/单例 构建Retrofit请求类
+ * date 2017/5/8
+ * description 采用快速 工厂模式/单例 构建Retrofit请求类
  */
 public class MyRetrofitClient {
 
-
+    public static final String BASE_URL = "http://192.168.2.110:8080/";
     private static final long TIMEOUT = 300;
     private static final String TAG = "MyRetrofitClient";
-    private static MyRetrofitClient myRetrofitClient;
+    private static MyRetrofitClient instance;
     private Retrofit retrofit;
-    private OkHttpClient mOkHttpClient;
-    private HttpCommonInterceptor mCommonInterceptor;
-    private CookieJar mCookieJar;
 
     public static MyRetrofitClient getInstance(Context context) {
-        if (myRetrofitClient == null) {
+        if (instance == null) {
             synchronized (MyRetrofitClient.class) {
-                if (myRetrofitClient == null) {
-                    myRetrofitClient = new MyRetrofitClient(context);
+                if (instance == null) {
+                    instance = new MyRetrofitClient(context);
                 }
             }
         }
-        return myRetrofitClient;
+        return instance;
     }
 
-
-    private MyRetrofitClient(Context context) {
-        initOkhttp();
-
-    }
 
     /**
-     * 初始化 OkHttpClient
-     *
+     * 构造函数，用于初试化
+     * @param context
      */
-    private void initOkhttp() {
-        mCookieJar = new CookieManger();
-        //添加token 在header中
-        mCommonInterceptor = new HttpCommonInterceptor.Builder()
-                .addHeaderParams("token", "android")
+    private MyRetrofitClient(Context context) {
+        CookieJar  mCookieJar = new CookieManger(context.getApplicationContext());
+        //添加token 在header中，没有可以不用
+        HttpCommonInterceptor mCommonInterceptor = new HttpCommonInterceptor.Builder()
+                .addHeaderParams("token", "yours token")
                 .build();
-        mOkHttpClient = new OkHttpClient.Builder()
+        OkHttpClient mOkHttpClient = new OkHttpClient.Builder()
+                //添加Cookie管理，不需要管理可以不加，token在Cookie中的时候需要添加
                 .cookieJar(mCookieJar)
+                //打印请求信息
                 .addInterceptor(new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
                     @Override
                     public void log(String message) {
-                        LogUtils.d(TAG, message);
+                        Log.d(TAG, message);
                     }
                 }).setLevel(HttpLoggingInterceptor.Level.BODY))
+                //相关请求时间设置
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .build();
-        initRetrofit();
+        initRetrofit(mOkHttpClient);
     }
 
     /**
      * 初始化retrofit
      */
-    private void initRetrofit() {
+    private void initRetrofit(OkHttpClient mOkHttpClient) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConfig.BASE_URL)
                 .client(mOkHttpClient)
@@ -83,6 +79,12 @@ public class MyRetrofitClient {
                 .build();
     }
 
+    /**
+     * 用于构建请求代理
+     * @param service
+     * @param <T>
+     * @return
+     */
     public <T> T createService(Class<T> service) {
         return retrofit.create(service);
     }

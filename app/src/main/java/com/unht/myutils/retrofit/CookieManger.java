@@ -2,8 +2,6 @@ package com.unht.myutils.retrofit;
 
 import android.content.Context;
 
-import com.unht.myutils.app.APP;
-
 import java.util.List;
 
 import okhttp3.Cookie;
@@ -14,21 +12,21 @@ import okhttp3.HttpUrl;
  * Cookie管理类
  *
  * @author KangLong
- * @date 2017/10/17
+ * @date 2017/6/17
  */
 
 public class CookieManger implements CookieJar {
     public static String APP_PLATFORM = "app-platform";
 
 
-//    private static Context mContext;
+    private static Context mContext;
 
     private static PersistentCookieStore cookieStore;
 
-    public CookieManger() {
-//        mContext = context;
+    public CookieManger(Context context) {
+        mContext = context;
         if (cookieStore == null) {
-            cookieStore = new PersistentCookieStore(APP.getAPP());
+            cookieStore = new PersistentCookieStore(context);
         }
 
     }
