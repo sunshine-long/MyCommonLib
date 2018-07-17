@@ -8,15 +8,15 @@ import android.app.Application;
  */
 
 public class APP extends Application {
-    public static APP mAPP;
+    public static APP instance;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mAPP = this;
+        instance = this;
     }
 
-    public static APP getAPP() {
-        return mAPP;
+    public static APP getInstance() {
+        return instance;
     }
 }
