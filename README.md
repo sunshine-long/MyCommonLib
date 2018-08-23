@@ -21,6 +21,7 @@
 封装了sharePrenance的常用操作，轻松读取项目存储、读取sp数据；
 
 - MyRetrofitClient
+
 封装了Rxjava + retrofit + 自定义拦截器，方便快捷的retrofit请求框架封装，以扩展，使用简单方便
 实现了：链式调用，动态切换baseurl，及自定义headers 
 项目已经创建单独的库进行维护 相关使用方式见：
