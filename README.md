@@ -1,14 +1,14 @@
 # MyUtils
 常用工具类
 ## 项目中封装了常用的工具类
-####说明
+#### 说明
 项目中 myutils 目录为本人在开发中总结或者优化过的工具类
 
    otherutils  目录为网上收藏的第三方作者的工具类
    
    base目录为activity/fragment的基类
     
-####简单介绍
+#### 简单介绍
 - ActivityCollector 
 
 主要用于管理项目中的activity，当要退出activity时销毁所有activity，结合项目中baseactivity一起使用。
