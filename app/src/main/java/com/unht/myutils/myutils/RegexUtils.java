@@ -1,4 +1,4 @@
-package com.unht.myutils.utils;
+package com.unht.myutils.myutils;
 
 import java.util.ArrayList;
 import java.util.List;

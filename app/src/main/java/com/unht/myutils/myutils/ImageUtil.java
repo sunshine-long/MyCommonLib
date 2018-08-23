@@ -14,7 +14,7 @@
 ********************************End of Head************************************\
 */
 
-package com.unht.myutils.utils;
+package com.unht.myutils.myutils;
 
 import android.annotation.TargetApi;
 import android.content.ContentUris;

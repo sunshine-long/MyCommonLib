@@ -1,4 +1,4 @@
-package com.unht.myutils.utils;
+package com.unht.myutils.myutils;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class PermissionUtil {
     public static boolean getCameraPermissions(@NonNull Activity activity, int requestCode) {
         return requestPerssions(activity, requestCode, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
+
     /**
      * 获取麦克风权限
      *
@@ -47,6 +49,7 @@ public class PermissionUtil {
     public static boolean getAudioPermissions(@NonNull Activity activity, int requestCode) {
         return requestPerssions(activity, requestCode, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
+
     /**
      * 获取定位权限
      *
@@ -55,6 +58,7 @@ public class PermissionUtil {
     public static boolean getLocationPermissions(@NonNull Activity activity, int requestCode) {
         return requestPerssions(activity, requestCode, Manifest.permission.ACCESS_COARSE_LOCATION);
     }
+
     /**
      * 获取读取联系人权限
      *
@@ -63,6 +67,7 @@ public class PermissionUtil {
     public static boolean getContactsPermissions(@NonNull Activity activity, int requestCode) {
         return requestPerssions(activity, requestCode, Manifest.permission.READ_CONTACTS);
     }
+
     /**
      * 获取发送短信权限
      *
@@ -71,6 +76,7 @@ public class PermissionUtil {
     public static boolean getSendSMSPermissions(@NonNull Activity activity, int requestCode) {
         return requestPerssions(activity, requestCode, Manifest.permission.SEND_SMS);
     }
+
     /**
      * 获取拨打电话权限
      *
@@ -79,11 +85,6 @@ public class PermissionUtil {
     public static boolean getCallPhonePermissions(@NonNull Activity activity, int requestCode) {
         return requestPerssions(activity, requestCode, Manifest.permission.CALL_PHONE);
     }
-
-
-
-
-
 
 
     public static List<String> getDeniedPermissions(@NonNull Activity activity, @NonNull String... permissions) {
@@ -233,4 +234,4 @@ public class PermissionUtil {
 
     }
 }
-}
+

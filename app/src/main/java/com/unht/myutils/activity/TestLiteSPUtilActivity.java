@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.unht.myutils.R;
-import com.unht.myutils.utils.LitePrefUtils;
+import com.unht.myutils.myutils.PreferencesUtils;
 
 public class TestLiteSPUtilActivity extends AppCompatActivity {
 
@@ -14,7 +14,7 @@ public class TestLiteSPUtilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String string = (String) LitePrefUtils.getInstance(this).getValue("text2",null);
-        Toast.makeText(this, string,Toast.LENGTH_LONG).show();
+        String string = PreferencesUtils.getString("text2");
+        Toast.makeText(this, string, Toast.LENGTH_LONG).show();
     }
 }

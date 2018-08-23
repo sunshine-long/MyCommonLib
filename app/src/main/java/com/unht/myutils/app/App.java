@@ -1,5 +1,4 @@
 package com.unht.myutils.app;
-
 import android.app.Application;
 
 /**
@@ -7,8 +6,8 @@ import android.app.Application;
  * @date 2017/12/14
  */
 
-public class APP extends Application {
-    public static APP instance;
+public class App extends Application {
+    public static App instance;
 
     @Override
     public void onCreate() {
@@ -16,7 +15,7 @@ public class APP extends Application {
         instance = this;
     }
 
-    public static APP getInstance() {
+    public static App getInstance() {
         return instance;
     }
 }

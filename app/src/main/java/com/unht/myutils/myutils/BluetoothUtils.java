@@ -1,7 +1,11 @@
-package com.unht.myutils.utils;
+package com.unht.myutils.myutils;
 
 import android.bluetooth.BluetoothAdapter;
-
+/**
+ * @desc BluetoothUtils 用于蓝牙使用的相关工具类
+ * @author Marlon
+ * @date 2018/8/23
+ */
 public class BluetoothUtils {
 
     private static BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

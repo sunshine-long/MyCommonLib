@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.unht.myutils.R;
-import com.unht.myutils.utils.LitePrefUtils;
+import com.unht.myutils.myutils.PreferencesUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        PreferencesUtils.init();
         textSPutils();
     }
 
@@ -24,9 +24,9 @@ public class MainActivity extends AppCompatActivity {
      *
      */
     private void textSPutils() {
-        LitePrefUtils.getInstance(this).putValue("test", "llalalala");
-        String string = (String) LitePrefUtils.getInstance(this).getValue("test", null);
-        LitePrefUtils.getInstance(this).setFileName("userInfo").putValue("text2", "这是测试有文件名的情况！");
+        PreferencesUtils.putString("test", "llalalala");
+        String string =  PreferencesUtils.getString("test");
+        PreferencesUtils.setFileName("NEW_userInfo").putString("text2", "这是测试有文件名的情况！");
         Toast.makeText(this, string, Toast.LENGTH_LONG).show();
     }
 
