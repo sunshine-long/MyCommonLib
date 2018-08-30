@@ -48,7 +48,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
     /*RecyclerViewAdapter 工具类*/
-    implementation 'com.android.support:recyclerview-v7:25.3.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.25'
     /*guide*/
     implementation 'com.github.bumptech.glide:glide:4.2.0'
