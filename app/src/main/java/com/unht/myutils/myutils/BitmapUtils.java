@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -145,6 +146,7 @@ public class BitmapUtils {
 
     /**
      * 也可以获取图像的方向
+     *
      * @param context
      * @param photoUri
      * @return
@@ -184,6 +186,28 @@ public class BitmapUtils {
                 cursor.close();
             }
         }
+    }
+
+    /**
+     * Bitmap 转byte
+     *
+     * @param bitmap
+     * @return
+     */
+    public static byte[] bitmapToByte(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return baos.toByteArray();
+    }
+
+    /**
+     * byte转Bitmap
+     *
+     * @param bytes
+     * @return
+     */
+    public static Bitmap byteToBitmap(byte[] bytes) {
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
 
