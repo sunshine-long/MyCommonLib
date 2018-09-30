@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion build_versions.compileVersion
+    buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.unht.myutils"
-        minSdkVersion 15
-        targetSdkVersion 27
+        minSdkVersion  build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -27,45 +27,48 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
+    implementation deps.support.app_compat
+    implementation deps.support.v13
+    implementation deps.support.v4
+    implementation deps.support.percent
+    implementation deps.support.recyclerview
+    implementation deps.support.cardview
+    implementation deps.support.design
+    implementation deps.support.constraint_layout
 
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
     /*andPermission用于权限的申请*/
-    implementation 'com.yanzhenjie:permission:1.1.0'
+    implementation deps.andpermission
     /*gson 用于解析json数据*/
-    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation deps.gson
     /*retrofit 网络请求框架 + rxjava */
-    implementation 'com.squareup.retrofit2:retrofit:2.2.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
+    implementation deps.retrofit.runtime
+    implementation deps.retrofit.adapter
+    implementation deps.retrofit.gson
+
     /*okhttp日志打印*/
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.6.0'
+    implementation deps.logging_interceptor
     /*rxjava*/
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
+    implementation deps.rxjava2
+    implementation deps.rx_android
     /*RecyclerViewAdapter 工具类*/
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.25'
+    implementation deps.recyleview_helper
     /*guide*/
-    implementation 'com.github.bumptech.glide:glide:4.2.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
+    implementation deps.glide
+    annotationProcessor deps.glide_compiler
     /*butterknife*/
-    implementation 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-    implementation 'com.yanzhenjie:permission:1.1.0'
+    implementation deps.butterknife
+    annotationProcessor deps.butterknife_compiler
     /*ucrop*/
-    implementation 'com.github.yalantis:ucrop:2.2.1'
+    implementation deps.ucrop
     /*dagger2*/
-    implementation 'com.google.dagger:dagger:2.13'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
+    implementation deps.dagger.runtime
     /*添加dagger支持android类*/
-    implementation 'com.google.dagger:dagger-android:2.13'
-    implementation 'com.google.dagger:dagger-android-support:2.13' // if you use the support libraries
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.13'
+    implementation deps.dagger.android
+    implementation deps.dagger.android_support // if you use the support libraries
 
-
+    //annotationProcessor
+    annotationProcessor deps.dagger.compiler
+    annotationProcessor deps.dagger.android_support_compiler
 }
