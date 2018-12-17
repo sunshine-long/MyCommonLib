@@ -25,6 +25,10 @@ public class BitmapUtils {
     private static final String TAG = "BitmapUtils";
     private static String IMAGE_SAVE_FILE;
 
+    public BitmapUtils() {
+        throw new UnsupportedOperationException("It's not support");
+    }
+
     //将bitmap调整到指定大小
     public static Bitmap sizeBitmap(Bitmap origin, int newWidth, int newHeight) {
         if (origin == null) {
@@ -72,7 +76,7 @@ public class BitmapUtils {
     }
 
     public static void saveBitmap(final Bitmap bitmap, final String filename) {
-        File file = CommonUtils.createImageFile(IMAGE_SAVE_FILE, filename);
+        File file = FileUtils.createFile(IMAGE_SAVE_FILE, filename);
         try {
             final FileOutputStream out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);

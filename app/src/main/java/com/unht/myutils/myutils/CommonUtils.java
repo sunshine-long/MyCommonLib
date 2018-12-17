@@ -5,18 +5,19 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Environment;
 import android.util.DisplayMetrics;
-import android.util.Size;
 import android.view.Display;
 import android.view.WindowManager;
 
 import com.unht.myutils.app.App;
-import com.unht.myutils.otherutils.AppUtils;
-
-import java.io.File;
 
 public class CommonUtils {
 
     public static String SDCARDPATH = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+    private CommonUtils() {
+        throw new UnsupportedOperationException("It's not support");
+    }
+
     /**
      * dp转px
      *
@@ -66,81 +67,4 @@ public class CommonUtils {
         if (id > 0 && hasNavigationBar()) navBarHeightInPx = rs.getDimensionPixelSize(id);
         return navBarHeightInPx;
     }
-
-    /**
-     * 创建File对象，对应于data/data/${packageName}/cache/fileName.
-     *
-     * @param fileName 文件名
-     * @return File
-     */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static File createImageFile(String fileName) {
-        return createImageFile(AppUtils.getAppInfo(App.getInstance()).getName(), fileName);
-    }
-
-
-    public static File createImageFile(String perent, String fileName) {
-        File outDir = new File(SDCARDPATH + perent);
-        if (!outDir.exists()) {
-            outDir.mkdirs();
-        }
-        return new File(outDir, fileName);
-    }
-
-
-    /**
-     * 获取屏幕尺寸
-     *
-     * @return
-     */
-    public static Size getScreen() {
-        WindowManager manager = (WindowManager) App.getInstance()
-                .getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        manager.getDefaultDisplay().getMetrics(outMetrics);
-        int width = outMetrics.widthPixels;
-        int height = outMetrics.heightPixels;
-        return new Size(height, width);
-    }
-
-
-    /**
-     * 删除文件夹
-     *
-     * @param root
-     */
-    public static void deleteAllFiles(File root) {
-        File files[] = root.listFiles();
-        if (files != null) {
-            for (File f : files) {
-                if (f.isDirectory()) { // 判断是否为文件夹
-                    deleteAllFiles(f);
-                    try {
-                        f.delete();
-                    } catch (Exception e) {
-                    }
-                } else {
-                    if (f.exists()) { // 判断是否存在
-                        deleteAllFiles(f);
-                        try {
-                            f.delete();
-                        } catch (Exception e) {
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @param context 删除缓存
-     */
-    public static void clearAllCache(Context context) {
-        deleteAllFiles(context.getCacheDir());
-        if (Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            deleteAllFiles(context.getExternalCacheDir());
-        }
-    }
-
 }

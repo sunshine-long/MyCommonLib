@@ -25,8 +25,8 @@ public class AppReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {
             String packageName = intent.getDataString();
             if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {
-                File file = CommonUtils.createImageFile("","");
-                CommonUtils.deleteAllFiles(file);
+                File file = FileUtils.createFile("","");
+                FileUtils.deleteAllFiles(file);
             }
             Toast.makeText(context, "卸载了应用："+packageName, Toast.LENGTH_SHORT).show();
         }

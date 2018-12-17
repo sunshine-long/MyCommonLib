@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion build_versions.compileVersion
+    compileSdkVersion build_versions.compile_sdk
     buildToolsVersion build_versions.build_tools
     defaultConfig {
         applicationId "com.unht.myutils"
@@ -67,8 +67,13 @@ dependencies {
     /*添加dagger支持android类*/
     implementation deps.dagger.android
     implementation deps.dagger.android_support // if you use the support libraries
+    /*表格工具类*/
+    implementation deps.MPAndroidChart
+
 
     //annotationProcessor
     annotationProcessor deps.dagger.compiler
     annotationProcessor deps.dagger.android_support_compiler
+
+
 }

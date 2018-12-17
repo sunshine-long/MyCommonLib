@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.unht.myutils.R;
 import com.unht.myutils.myutils.PreferencesUtils;
 
-public class TestLiteSPUtilActivity extends AppCompatActivity {
+public class TestPreferencesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

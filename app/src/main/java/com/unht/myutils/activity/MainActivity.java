@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toLiteSP(View view) {
-        startActivity(new Intent(this, TestLiteSPUtilActivity.class));
+        startActivity(new Intent(this, TestPreferencesActivity.class));
     }
 
 }
