@@ -18,7 +18,7 @@ import java.io.IOException;
 
 /**
  * @author Marlon
- * @desc
+ * @desc 对bitmap进行相关操作的工具类
  * @date 2018/8/16
  */
 public class BitmapUtils {
@@ -29,7 +29,14 @@ public class BitmapUtils {
         throw new UnsupportedOperationException("It's not support");
     }
 
-    //将bitmap调整到指定大小
+    /**
+     * 将bitmap调整到指定大小
+     *
+     * @param origin
+     * @param newWidth
+     * @param newHeight
+     * @return
+     */
     public static Bitmap sizeBitmap(Bitmap origin, int newWidth, int newHeight) {
         if (origin == null) {
             return null;
@@ -39,42 +46,53 @@ public class BitmapUtils {
         float scaleWidth = ((float) newWidth) / width;
         float scaleHeight = ((float) newHeight) / height;
         Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);// 使用后乘
+        // 使用后乘
+        matrix.postScale(scaleWidth, scaleHeight);
         Bitmap newBM = Bitmap.createBitmap(origin, 0, 0, width, height, matrix, false);
-        if (!origin.isRecycled()) {//这时候origin还有吗？
+        //这时候origin还有用吗？
+        if (!origin.isRecycled()) {
             origin.recycle();
         }
         return newBM;
     }
 
-    public static Bitmap decodeUri(Context context, Uri selectedImage) throws FileNotFoundException {
+    /**
+     * 读取URi路径中的图片，并压缩到指定尺寸
+     *
+     * @param context 上下文
+     * @param selectedImage 指定图片路径
+     * @param requiredSize 想要压缩的尺寸
+     * @return
+     * @throws FileNotFoundException
+     */
+    public static Bitmap decodeUri(Context context, Uri selectedImage,final int requiredSize) throws FileNotFoundException {
         // Decode image size
         BitmapFactory.Options o = new BitmapFactory.Options();
         o.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(context.getContentResolver().openInputStream(selectedImage), null, o);
 
-        // The new size we want to scale to
-        final int REQUIRED_SIZE = 400;
-
         // Find the correct scale value. It should be the power of 2.
         int width_tmp = o.outWidth, height_tmp = o.outHeight;
         int scale = 1;
         while (true) {
-            if (width_tmp / 2 < REQUIRED_SIZE
-                    || height_tmp / 2 < REQUIRED_SIZE) {
+            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize) {
                 break;
             }
             width_tmp /= 2;
             height_tmp /= 2;
             scale *= 2;
         }
-
         // Decode with inSampleSize
         BitmapFactory.Options o2 = new BitmapFactory.Options();
         o2.inSampleSize = scale;
         return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(selectedImage), null, o2);
     }
 
+    /**
+     * 将bitmap包存为本地图片
+     * @param bitmap 原始bitmap 数据
+     * @param filename 保存的文件名
+     */
     public static void saveBitmap(final Bitmap bitmap, final String filename) {
         File file = FileUtils.createFile(IMAGE_SAVE_FILE, filename);
         try {

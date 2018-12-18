@@ -9,10 +9,11 @@ import com.unht.myutils.app.App;
 
 
 /**
- * Created by KangLong on 2017/7/8.
+ *
+ * @author KangLong
+ * @date 2017/7/8
  * 系统键盘的调用和隐藏
  */
-
 public class KeyBoardUtils {
     /**
      * @throws

@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * 用于管理activity 退出app时使用
  * Created by KangLong on 2017/6/30.
+ * 升级版本为：{@link ViewManager}
  */
 
 public class ActivityCollector {

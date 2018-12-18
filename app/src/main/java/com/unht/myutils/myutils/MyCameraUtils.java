@@ -127,14 +127,14 @@ public class MyCameraUtils {
     }
 
     /**
-     * 通过时间创建图片URI
+     * 通过时间创建图片URI @{@link FileUtils}
      *
      * @param context
      * @return
      */
     public static Uri createImagePathUri(Context context) {
         Uri imageFilePath = null;
-        File file = CommonUtils.createImageFile("puctures.jpg");
+        File file = FileUtils.createFile("puctures.jpg");
         try {
             file.createNewFile();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -230,7 +230,7 @@ public class MyCameraUtils {
 
 
     /**
-     * 启动Urop剪切图片
+     * 启动Urop剪切图片{@link FileUtils}
      *
      * @param activity
      * @param sourceUri
@@ -240,7 +240,7 @@ public class MyCameraUtils {
      * @return
      */
     public static Uri startUCrop(Activity activity, Uri sourceUri, int requestCode, float aspectRatioX, float aspectRatioY) {
-        File outFile = CommonUtils.createImageFile("cover.jpg");
+        File outFile = FileUtils.createFile("cover.jpg");
         cropImageUri = Uri.fromFile(outFile);
         UCrop uCrop = UCrop.of(sourceUri, cropImageUri);
         UCrop.Options options = new UCrop.Options();

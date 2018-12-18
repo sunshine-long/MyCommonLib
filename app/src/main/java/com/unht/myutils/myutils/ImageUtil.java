@@ -27,12 +27,8 @@ import android.provider.MediaStore;
 
 /**
  * 文 件 名: ImageUtil
- * 创 建 人: 康龙
  * 创建日期: 16-8-22 11:36
  * 描    述:
- * 修 改 人:
- * 修改时间：
- * 修改备注：
  * @author kanglong
  */
 

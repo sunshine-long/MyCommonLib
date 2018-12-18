@@ -11,10 +11,9 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * <p></p>
+ * <p>用于管理Activity进出栈信息</p>
  *
- * @author 张华洋 2017/9/26 22:26
- * @version V1.1
+ * @author 康龙 2018/9/26 22:26
  * @name ViewManager
  */
 @Keep

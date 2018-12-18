@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Sunshine
- * @Description App信息相关类
+ * @desc AppUtils 用于获取App的相关信息的工具类
+ * @author Marlon
+ * @date 2018/12/18
  */
 public class AppUtils {
 
