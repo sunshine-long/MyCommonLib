@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">烟田管理</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">登录</string>
+    <string name="putInNameHit">请输入账号</string>
+    <string name="putInNameHistory">历史账号信息</string>
+    <string name="putInPWDHit">请输入密码</string>
+    <string name="forgetPwd">忘记密码</string>
+    <string name="userRegister">用户注册</string>
+    <string name="farmerName">烟农姓名：</string>
+    <string name="belongCountry">所属村组：</string>
+    <string name="fieldName">烟田名称：</string>
+    <string name="fieldNumber">烟田编号：</string>
+    <string name="fieldArea">烟田面积：</string>
+    <string name="fieldKind">土地类型：</string>
+    <string name="topographicFeatures">地形地貌：</string>
+    <string name="earthKind">土壤类型：</string>
+    <string name="owner">所有者 ：</string>
+    <string name="farmByFarmer">种植烟农：</string>
+    <string name="gis">地图位置：</string>
+    <string name="produceStep">生产阶段：</string>
+    <string name="produceProgress">生产进度：</string>
+    <string name="autoProgress">系统进度：</string>
+    <string name="observationProgress">申述进度：</string>
+    <string name="observationReason">申述理由：</string>
+    <string name="signed">已签合同</string>
+    <string name="unsigned">未签合同</string>
+    <string name="history">历史档案</string>
+    <string name="quoteHistory">+引用历史档案</string>
+    <string name="agreementArea">合同面积：</string>
+    <string name="tobaccoNumber">移栽株数：</string>
+    <string name="clickToChoose">点击选择</string>
+    <string name="commit">提交</string>
+    <string name="save">保存</string>
+    <string name="saveBack">保存返回</string>
+    <string name="saveContinue">保存继续</string>
+    <string name="farmerNo">烟农编号：</string>
+    <string name="identifyId">身份证号：</string>
+    <string name="phoneNO">联系电话：</string>
+    <string name="ownTobacco">所有烟田：</string>
+    <string name="address">家庭住址：</string>
+    <string name="farmField">种植烟田</string>
+    <string name="system_download_component_disable">下载服务不可用,请您启用</string>
+    <string name="system_download_description">版本更新</string>
+    <string name="permission_get_accounts_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_GET_ACCOUNTS</string>
+    <string name="permission_read_phone_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_READ_PHONE_STATE</string>
+    <string name="permission_call_phone_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_CALL_PHONE</string>
+    <string name="permission_camera_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_CAMERA</string>
+    <string name="permission_access_fine_location_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_ACCESS_FINE_LOCATION</string>
+    <string name="permission_access_coarse_location_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_ACCESS_COARSE_LOCATION</string>
+    <string name="permission_read_external_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_READ_EXTERNAL_STORAGE</string>
+    <string name="permission_white_external_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_WRITE_EXTERNAL_STORAGE</string>
+    <string name="permission_recode_audio_hint">没有此权限，无法开启这个功能，请开启权限。PERMISSION_RECORD_AUDIO</string>
+    <string-array name="permissions">
+        <item>@string/permission_recode_audio_hint</item>
+        <item>@string/permission_get_accounts_hint</item>
+        <item>@string/permission_read_phone_hint</item>
+        <item>@string/permission_call_phone_hint</item>
+        <item>@string/permission_camera_hint</item>
+        <item>@string/permission_access_fine_location_hint</item>
+        <item>@string/permission_access_coarse_location_hint</item>
+        <item>@string/permission_read_external_hint</item>
+        <item>@string/permission_white_external_hint</item>
+    </string-array>
+    <string name="toast_network_error">网络连接失败请检查网络</string>
+    <string name="main">主页</string>
+    <string name="process">进度</string>
+    <string name="field">烟田</string>
+    <string name="farmer">烟农</string>
+    <string name="user">我的</string>
+    <string name="login_out">退出登陆</string>
+</resources>

@@ -1,0 +1,88 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
+android {
+    compileSdkVersion build_versions.compile_sdk
+    defaultConfig {
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+greendao {
+    schemaVersion 1  //版本
+    daoPackage 'net.uwonders.greendao' // 一般为app包名+生成文件的文件夹名
+    targetGenDir 'src/main/java' //生成文件路径
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //添加support包
+    api deps.support.app_compat
+    api deps.support.v4
+    api deps.support.v13
+    api deps.support.design
+    api deps.support.cardview
+    api deps.support.percent
+    api deps.support.recyclerview
+    api deps.support.constraint_layout
+    //BaseRecycleAdpter
+    api deps.recyleview_helper
+
+    //retrofit 网络请求框架
+    api deps.retrofit.runtime
+    //添加相关适配器
+    api deps.retrofit.adapter_rxjava2
+    api deps.retrofit.gson
+    api deps.retrofit.scalars
+    //网络请求日志
+    api deps.logging_interceptor
+    //json 解析
+    api deps.gson
+    /**添加剪切库*/
+    api deps.ucrop
+    /**
+     * log日志打印
+     */
+    api deps.logger
+    //rxjava2
+    api deps.rxjava2
+    api deps.rx_android
+    //glide 网络图片加载框架
+    api deps.glide
+    annotationProcessor deps.glide_compiler
+
+    //dagger2
+    api deps.dagger.runtime
+    api deps.dagger.android
+    api deps.dagger.android_support
+    annotationProcessor deps.dagger.compiler
+    annotationProcessor deps.dagger.android_support_compiler
+
+    //地图
+    api deps.aMap
+    api deps.aMapLocation
+    //权限
+    api deps.easypermissions
+    api deps.andpermission
+    //router
+    api deps.arouter_api
+    //数据库
+    api deps.greendao
+
+    api deps.MPAndroidChart
+}

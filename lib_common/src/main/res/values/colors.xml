@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#5AAAEF</color>
+    <color name="colorPrimaryDark">#5AAAEF</color>
+    <color name="colorAccent">#5AAAEF</color>
+
+    <color name="black">#000000</color>
+    <color name="green">#5AAAEF</color>
+    <color name="white">#ffffff</color>
+    <color name="blue">#008000</color>
+    <color name="yellow">#FF8000</color>
+    <color name="statusBarColor">#5AAAEF</color>
+    <color name="titlerBarColor">#5AAAEF</color>
+    <!--版本V1.0颜色值-->
+    <color name="translucent_grey">#99999999</color>
+    <color name="transparent">#00000000</color>
+    <color name="grey">#A4A9AC</color>
+    <color name="unsigned_red">#ff0000</color>
+    <color name="signed_back">#000000</color>
+    <color name="history_yellow">#c89600</color>
+    <color name="upload_purple">#640064</color>
+    <color name="bg_grey">#f0f0f0</color>
+</resources>

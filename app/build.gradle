@@ -23,57 +23,6 @@ configurations.all {
     resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
 }
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testImplementation 'junit:junit:4.12'
-    implementation deps.support.app_compat
-    implementation deps.support.v13
-    implementation deps.support.v4
-    implementation deps.support.percent
-    implementation deps.support.recyclerview
-    implementation deps.support.cardview
-    implementation deps.support.design
-    implementation deps.support.constraint_layout
-
-
-    /*andPermission用于权限的申请*/
-    implementation deps.andpermission
-    /*gson 用于解析json数据*/
-    implementation deps.gson
-    /*retrofit 网络请求框架 + rxjava */
-    implementation deps.retrofit.runtime
-    implementation deps.retrofit.adapter
-    implementation deps.retrofit.gson
-
-    /*okhttp日志打印*/
-    implementation deps.logging_interceptor
-    /*rxjava*/
-    implementation deps.rxjava2
-    implementation deps.rx_android
-    /*RecyclerViewAdapter 工具类*/
-    implementation deps.recyleview_helper
-    /*guide*/
-    implementation deps.glide
-    annotationProcessor deps.glide_compiler
-    /*butterknife*/
-    implementation deps.butterknife
-    annotationProcessor deps.butterknife_compiler
-    /*ucrop*/
-    implementation deps.ucrop
-    /*dagger2*/
-    implementation deps.dagger.runtime
-    /*添加dagger支持android类*/
-    implementation deps.dagger.android
-    implementation deps.dagger.android_support // if you use the support libraries
-    /*表格工具类*/
-    implementation deps.MPAndroidChart
-
-
-    //annotationProcessor
-    annotationProcessor deps.dagger.compiler
-    annotationProcessor deps.dagger.android_support_compiler
-
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':lib_common')
 }

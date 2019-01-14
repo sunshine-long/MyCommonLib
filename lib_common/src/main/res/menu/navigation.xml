@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_main"
+        android:icon="@drawable/main_no_select"
+        android:title="@string/main" />
+    <item
+        android:id="@+id/navigation_process"
+        android:icon="@drawable/progress_no_select"
+        android:title="@string/process" />
+    <item
+        android:id="@+id/navigation_field"
+        android:icon="@drawable/field_no_selected"
+        android:title="@string/field" />
+    <item
+        android:id="@+id/navigation_farmer"
+        android:icon="@drawable/farmer_no_select"
+        android:title="@string/farmer" />
+    <item
+        android:id="@+id/navigation_user"
+        android:icon="@drawable/my_no_select"
+        android:title="@string/user" />
+</menu>
