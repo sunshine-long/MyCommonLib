@@ -10,9 +10,8 @@ import com.marlon.module.common.di.module.HttpModule;
 import com.marlon.module.common.utils.ClassUtils;
 import com.marlon.module.common.utils.PreferencesUtils;
 import com.marlon.module.common.utils.Utils;
-
-import net.uwonders.greendao.DaoMaster;
-import net.uwonders.greendao.DaoSession;
+import com.marlon.module.greendao.DaoMaster;
+import com.marlon.module.greendao.DaoSession;
 
 import java.util.List;
 

@@ -5,10 +5,9 @@ import android.util.Log;
 
 import com.marlon.module.common.base.BaseApplication;
 import com.marlon.module.common.network.BaseApiService;
-import com.marlon.module.common.network.BaseInterceptor;
-import com.marlon.module.common.network.BaseUrlInterceptor;
-import com.marlon.module.common.network.CaheInterceptor;
+
 import com.marlon.module.common.network.CookieManger;
+import com.marlon.module.common.network.InterceptorHelper;
 
 import java.io.File;
 import java.util.HashMap;
@@ -64,11 +63,11 @@ public class HttpModule {
                 //添加Cookie管理，不需要管理可以不加，token在Cookie中的时候需要添加
                 .cookieJar(cookieJar)
                 //添加统一的请求头
-                .addInterceptor(new BaseInterceptor(headers))
+                .addInterceptor(InterceptorHelper.getHeaderInterceptor(headers))
                 //添加base改变拦截器
-                .addInterceptor(new BaseUrlInterceptor())
+                .addInterceptor(InterceptorHelper.getBaseUrlInterceptor())
                 //添加缓存拦截器
-                .addNetworkInterceptor(new CaheInterceptor(BaseApplication.getInstance()))
+                .addNetworkInterceptor(InterceptorHelper.getCaheInterceptor(BaseApplication.getInstance()))
                 //打印请求信息（可以自定义打印的级别！！）
                 .addNetworkInterceptor(new HttpLoggingInterceptor(message -> Log.e(TAG, message)).setLevel(HttpLoggingInterceptor.Level.BODY))
                 //相关请求时间设置

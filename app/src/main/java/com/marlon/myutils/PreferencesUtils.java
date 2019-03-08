@@ -6,8 +6,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import net.uwonders.tobaccodemo.base.BaseApplication;
+import com.marlon.module.common.base.BaseApplication;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

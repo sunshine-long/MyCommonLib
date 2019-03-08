@@ -18,9 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fitsleep.sunshinelibrary.R;
-import com.fitsleep.sunshinelibrary.inter.OnItemClickListener;
-import com.fitsleep.sunshinelibrary.view.AlertView;
+import com.marlon.myutils.R;
 
 import java.io.File;
 import java.io.IOException;

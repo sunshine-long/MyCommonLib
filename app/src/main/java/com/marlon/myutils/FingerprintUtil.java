@@ -6,7 +6,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.support.v4.os.CancellationSignal;
 
-import com.marlon.myutils.app.App;
+import com.marlon.module.common.base.BaseApplication;
+
 
 /**
  * 添加指纹识别工具类
@@ -19,7 +20,7 @@ public class FingerprintUtil {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public static void callFingerPrint(final OnCallBackListener listener) {
-        FingerprintManagerCompat managerCompat = FingerprintManagerCompat.from(App.getInstance());
+        FingerprintManagerCompat managerCompat = FingerprintManagerCompat.from(BaseApplication.getInstance());
         //判断设备是否支持
         if (!managerCompat.isHardwareDetected()) {
             if (listener != null) {
@@ -27,7 +28,7 @@ public class FingerprintUtil {
             }
             return;
         }
-        KeyguardManager keyguardManager = (KeyguardManager) App.getInstance().getSystemService(App.getInstance().KEYGUARD_SERVICE);
+        KeyguardManager keyguardManager = (KeyguardManager) BaseApplication.getInstance().getSystemService(BaseApplication.getInstance().KEYGUARD_SERVICE);
         //判断设备是否处于安全保护中
         if (!keyguardManager.isKeyguardSecure()) {
             if (listener != null) {

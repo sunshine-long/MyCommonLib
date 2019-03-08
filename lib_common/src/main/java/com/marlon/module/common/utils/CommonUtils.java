@@ -3,7 +3,7 @@ package com.marlon.module.common.utils;
 import android.content.Context;
 import android.os.Environment;
 
-import net.uwonders.tobaccodemo.constent.AppConstent;
+import com.marlon.module.common.config.AppConfig;
 
 import java.io.File;
 
@@ -17,11 +17,11 @@ public class CommonUtils {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static File createImageFile(String fileName) {
-        return createImageFile(AppConstent.COMMON_FILE, fileName);
+        return createImageFile(AppConfig.COMMON_FILE, fileName);
     }
 
     public static File createImageFile(String perent, String fileName) {
-        String path = AppConstent.APP_SAVE_PATH + perent;
+        String path = AppConfig.APP_SAVE_PATH + perent;
         File outDir = new File(path);
         if (!outDir.exists()) {
             outDir.mkdirs();

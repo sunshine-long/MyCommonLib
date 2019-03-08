@@ -6,8 +6,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import net.uwonders.tobaccodemo.base.BaseApplication;
+import com.marlon.module.common.base.BaseApplication;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -142,14 +141,15 @@ public class PreferencesUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> getListObject(String key,Class<T> clazz) {
+    public static <T> List<T> getListObject(String key, Class<T> clazz) {
         String json = getString(key);
         if (TextUtils.isEmpty(json)) {
             return null;
         }
         try {
             Gson gson = new Gson();
-            return gson.fromJson(json, new TypeToken<List<T>>() {}.getType());
+            return gson.fromJson(json, new TypeToken<List<T>>() {
+            }.getType());
         } catch (Exception e) {
             return null;
         }

@@ -16,8 +16,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.marlon.module.common.base.BaseApplication;
-import com.marlon.myutils.app.App;
-import com.uwonders.smokemonitor.R;
+import com.marlon.myutils.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
