@@ -1,6 +1,7 @@
 package com.marlon.module.common.base;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -153,6 +154,28 @@ public abstract class BaseActivity extends AppCompatActivity {
         } else {
             finish();
         }
+    }
+
+
+    /**
+     * 带参数跳转
+     * @param cls
+     * @param bundle
+     */
+    protected void goActivity(Class<?> cls,@Nullable Bundle bundle){
+        Intent intent = new Intent(this,cls);
+        if(bundle != null){
+            intent.putExtras(bundle);
+        }
+        startActivity(intent);
+    }
+
+    /**
+     * 不带参数跳转
+     * @param cls
+     */
+    protected void goActivity(Class<?> cls){
+        goActivity(cls,null);
     }
 
 }

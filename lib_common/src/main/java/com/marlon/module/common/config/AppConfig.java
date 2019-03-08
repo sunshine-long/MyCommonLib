@@ -1,4 +1,4 @@
-package com.marlon.module.common.constent;
+package com.marlon.module.common.config;
 
 import android.os.Environment;
 

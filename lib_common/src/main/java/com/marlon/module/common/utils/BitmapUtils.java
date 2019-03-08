@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.marlon.module.common.constent.AppConfig;
+import com.marlon.module.common.config.AppConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

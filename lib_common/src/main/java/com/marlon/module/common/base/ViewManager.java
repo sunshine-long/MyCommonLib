@@ -33,7 +33,7 @@ public class ViewManager {
     private ViewManager() {
     }
 
-    public void addFragment(int index, BaseMvpFragment fragment) {
+    public void addFragment(int index, BaseFragment fragment) {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
         }

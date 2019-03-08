@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 import androidx.annotation.NonNull;
 
-import static com.marlon.module.common.constent.AppConfig.SDCARDPATH;
+import static com.marlon.module.common.config.AppConfig.SDCARDPATH;
 
 
 /**
