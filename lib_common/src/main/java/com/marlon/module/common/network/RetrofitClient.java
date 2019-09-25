@@ -2,8 +2,7 @@ package com.marlon.module.common.network;
 
 import android.content.Context;
 import android.text.TextUtils;
-
-import com.marlon.module.common.base.BaseApplication;
+import android.util.Log;
 
 import java.io.File;
 import java.util.Map;
@@ -12,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Cache;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -22,43 +22,50 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  * date 2017/5/8
  * description 快速 构建Retrofit请求类
  */
-public class MyRetrofitClient {
-
-    public static String baseUrl = BaseApiService.OUTSIDE_BASIC_ULR;
+public class RetrofitClient {
     private static final long TIMEOUT = 10;
     private static final String TAG = "MyRetrofitClient";
     private Retrofit retrofit;
-    private static Context mContext = BaseApplication.getInstance();
+    private static Context mContext;
     private OkHttpClient mOkHttpClient;
 
-    public static MyRetrofitClient getInstance() {
-
+    public static RetrofitClient getInstance(Context context) {
+        if (context != null) {
+            mContext = context;
+        }
         return SingletonHolder.INSTANCE;
     }
 
-    private static MyRetrofitClient getInstance(String url) {
-        return new MyRetrofitClient(mContext, url);
+    private static RetrofitClient getInstance(Context context, String url) {
+        if (context != null) {
+            mContext = context;
+        }
+        return new RetrofitClient(context, url);
     }
 
     /**
      * 用于自定义url的请求和添加token的请求
      *
+     * @param context 上下文
      * @param url     自定义baseUrl
      * @param headers 自定义添加的header
      * @return
      */
-    private static MyRetrofitClient getInstance( String url, Map<String, String> headers) {
-        return new MyRetrofitClient(mContext, url, headers);
+    private static RetrofitClient getInstance(Context context, String url, Map<String, String> headers) {
+        if (context != null) {
+            mContext = context;
+        }
+        return new RetrofitClient(context, url, headers);
     }
 
     /**
      * 创建内部类单利
      */
     private static class SingletonHolder {
-        private static MyRetrofitClient INSTANCE = new MyRetrofitClient(mContext);
+        private static RetrofitClient INSTANCE = new RetrofitClient(mContext);
     }
 
-    private MyRetrofitClient() {
+    private RetrofitClient() {
     }
 
     /**
@@ -66,17 +73,17 @@ public class MyRetrofitClient {
      *
      * @param context
      */
-    private MyRetrofitClient(Context context) {
+    private RetrofitClient(Context context) {
         this(context, null);
     }
 
-    private MyRetrofitClient(Context context, String url) {
+    private RetrofitClient(Context context, String url) {
         this(context, url, null);
     }
 
-    private MyRetrofitClient(Context context, String url, Map<String, String> headers) {
+    private RetrofitClient(Context context, String url, Map<String, String> headers) {
         if (TextUtils.isEmpty(url)) {
-            url = baseUrl;
+            url = HttpConfig.BASE_URL_DAFULT;
         }
         File mFile = new File(context.getCacheDir() + "http");//储存目录
         long maxSize = 10 * 1024 * 1024; // 10 MB 最大缓存数
@@ -91,7 +98,7 @@ public class MyRetrofitClient {
                 //添加缓存拦截器
                 .addNetworkInterceptor(InterceptorHelper.getCaheInterceptor(context))
                 //打印请求信息（可以自定义打印的级别！！）
-                .addNetworkInterceptor(InterceptorHelper.getLogInterceptor())
+                .addNetworkInterceptor(new HttpLoggingInterceptor(message -> Log.e(TAG, message)).setLevel(HttpLoggingInterceptor.Level.BODY))
                 //相关请求时间设置
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT, TimeUnit.SECONDS)
@@ -115,25 +122,16 @@ public class MyRetrofitClient {
     }
 
     /**
-     * 用于构建请求代理,BaseApiService中没有包含时可以用这个
+     * 用于构建请求代理,ApiService中没有包含时可以用这个
      *
      * @param service
      * @param <T>
      * @return
      */
-    public <T> T createService(Class<T> service) {
+    public <T extends HttpConfig> T createService(Class<T> service) {
         if (service == null) {
             throw new RuntimeException("Api service is null!");
         }
         return retrofit.create(service);
-    }
-
-    /**
-     * 通过代理构建接口
-     *
-     * @return
-     */
-    public BaseApiService createService() {
-        return retrofit.create(BaseApiService.class);
     }
 }

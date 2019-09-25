@@ -1,7 +1,8 @@
 package com.marlon.module.common.base;
 
 
-import com.marlon.module.common.network.BaseApiService;
+import com.marlon.module.common.network.ApiService;
+import com.marlon.module.common.network.BaseObserver;
 import com.marlon.module.common.network.RxHelper;
 
 import javax.inject.Inject;
@@ -18,12 +19,12 @@ import io.reactivex.disposables.Disposable;
  */
 public class RxPresenter<V extends BaseView> implements BasePresenter<V> {
 
-    protected BaseApiService apiService ;
+    protected ApiService apiService ;
     protected BaseApplication mContext ;
     protected V mView;
     private CompositeDisposable mCompositeDisposable;
     @Inject
-    public RxPresenter(BaseApiService apiService, BaseApplication mContext) {
+    public RxPresenter(ApiService apiService, BaseApplication mContext) {
         this.apiService = apiService;
         this.mContext = mContext;
     }
@@ -50,7 +51,7 @@ public class RxPresenter<V extends BaseView> implements BasePresenter<V> {
         if (mCompositeDisposable == null) {
             mCompositeDisposable = new CompositeDisposable();
         }
-        mCompositeDisposable.add(observable.compose(RxHelper.io_main(mContext)).subscribeWith(observer));
+        mCompositeDisposable.add(observable.compose(RxHelper.applySchedulers(mContext)).subscribeWith(observer));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.marlon.module.common.base;
+package com.marlon.module.common.network;
 
 
 import com.google.gson.annotations.SerializedName;
@@ -14,11 +14,11 @@ import java.io.Serializable;
 
 public class BaseResponse<E> implements Serializable {
     @SerializedName("code")
-    private int code = 200;
-    @SerializedName("message")
-    private String message;
-    @SerializedName("data")
-    private E data;
+    private int code = 200; //状态码 默认成功200
+    @SerializedName("msg")
+    private String msg; //返回消息
+    @SerializedName("response")
+    private E response;
 
     public boolean isSuccess() {
         return code == 200;
@@ -33,27 +33,27 @@ public class BaseResponse<E> implements Serializable {
     }
 
     public String getMessage() {
-        return message;
+        return msg;
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        this.msg = message;
     }
 
     public E getData() {
-        return data;
+        return response;
     }
 
     public void setData(E data) {
-        this.data = data;
+        this.response = data;
     }
 
     @Override
     public String toString() {
         return "BaseResponse{" +
                 "code=" + code +
-                ", message='" + message + '\'' +
-                ", data=" + data +
+                ", msg='" + msg + '\'' +
+                ", response=" + response +
                 '}';
     }
 }

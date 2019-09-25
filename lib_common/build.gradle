@@ -85,4 +85,7 @@ dependencies {
     api deps.greendao
 
     api deps.MPAndroidChart
+
+    api deps.butterknife
+    annotationProcessor deps.butterknife_compiler
 }

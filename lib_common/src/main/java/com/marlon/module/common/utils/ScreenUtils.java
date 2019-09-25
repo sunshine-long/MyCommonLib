@@ -1,12 +1,11 @@
 package com.marlon.module.common.utils;
 
-import android.content.Context;
+import android.content.res.Resources;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 import android.util.Size;
-import android.view.WindowManager;
 
 /**
  * @author Marlon
@@ -25,8 +24,8 @@ public class ScreenUtils {
      *
      * @return
      */
-    public static Size getScreenSizePx(Context context) {
-        DisplayMetrics dm = getDisplayMetrics(context);
+    public static Size getScreenSizePx() {
+        DisplayMetrics dm = getDisplayMetrics();
         int width = dm.widthPixels;
         int height = dm.heightPixels;
         return new Size(height, width);
@@ -35,47 +34,40 @@ public class ScreenUtils {
     /**
      * 获取屏幕管理类
      *
-     * @param context
      * @return
      */
     @NonNull
-    private static DisplayMetrics getDisplayMetrics(Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dm = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(dm);
-        return dm;
+    private static DisplayMetrics getDisplayMetrics() {
+        return Resources.getSystem().getDisplayMetrics();
     }
 
     /**
      * 获取屏幕密度density
      *
-     * @param context
      * @return
      */
-    public static float getDensity(Context context) {
-        DisplayMetrics dm = getDisplayMetrics(context);
+    public static float getDensity() {
+        DisplayMetrics dm = getDisplayMetrics();
         return dm.density;
     }
 
     /**
      * 获取屏幕密度 densityDpi
      *
-     * @param context
      * @return
      */
-    public static float getDensityDpi(Context context) {
-        DisplayMetrics dm = getDisplayMetrics(context);
+    public static float getDensityDpi() {
+        DisplayMetrics dm = getDisplayMetrics();
         return dm.densityDpi;
     }
 
     /**
      * 获取屏幕的高度 单位DPI
      *
-     * @param context
      * @return
      */
-    public static Size getScreenSizeDp(Context context) {
-        DisplayMetrics dm = getDisplayMetrics(context);
+    public static Size getScreenSizeDp() {
+        DisplayMetrics dm = getDisplayMetrics();
         // 屏幕宽度（像素）
         int width = dm.widthPixels;
         // 屏幕高度（像素）
@@ -91,20 +83,40 @@ public class ScreenUtils {
 
     /**
      * 获取屏幕宽度 单位DPI
-     * @param context
+     *
      * @return
      */
-    public static int getScreenWidthDP(Context context) {
-        return getScreenSizeDp(context).getWidth();
+    public static int getScreenWidthDP() {
+        return getScreenSizeDp().getWidth();
     }
 
     /**
      * 获取屏幕高度 单位DPI
-     * @param context
+     *
      * @return
      */
-    public static int getScreenHeightDP(Context context) {
-        return getScreenSizeDp(context).getHeight();
+    public static int getScreenHeightDP() {
+        return getScreenSizeDp().getHeight();
+    }
+
+    /**
+     * DP转PIX
+     *
+     * @param dp
+     * @return
+     */
+    public static float dpToPixel(float dp) {
+        return dp * getDensity();
+    }
+
+    /**
+     * Pix转DP
+     *
+     * @param pixel
+     * @return
+     */
+    public static float pixelToDp(float pixel) {
+        return pixel / getDensity();
     }
 
 }
