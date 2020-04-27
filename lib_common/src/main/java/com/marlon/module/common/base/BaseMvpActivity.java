@@ -47,8 +47,8 @@ public abstract class BaseMvpActivity<P extends RxPresenter> extends BaseActivit
     protected abstract void initInject();
 
     @Override
-    public void showShortToast(String msg) {
-        super.showShortToast(msg);
+    public void showToast(String msg) {
+        super.showToast(msg);
     }
 
     @Override

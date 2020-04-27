@@ -135,7 +135,7 @@ public class PreferencesUtils {
 
 
     /**
-     * // 通过Type去获取一个泛型对象
+     * // 通过Type去获取一个List泛型对象
      *
      * @param key
      * @param <T>

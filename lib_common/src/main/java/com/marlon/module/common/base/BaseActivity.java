@@ -1,16 +1,31 @@
 package com.marlon.module.common.base;
 
 import android.app.Activity;
+
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.AnimRes;
+import androidx.annotation.AnimatorRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.marlon.module.common.utils.PreferencesUtils;
 import com.marlon.module.common.utils.ScreenAdaptationUtil;
 import com.marlon.module.common.utils.Utils;
+import com.marlon.retrofitclent.handler.RxErrorHandler;
+import com.marlon.utils.R;
+
+import static com.bumptech.glide.load.HttpException.UNKNOWN;
+import static com.marlon.retrofitclent.exception.ResponeException.AUTHORIZEDTIMEOUT;
+import static com.marlon.retrofitclent.exception.ResponeException.UNAUTHORIZED;
+
 
 
 /**
@@ -18,10 +33,11 @@ import com.marlon.module.common.utils.Utils;
  * @date 17/8/11
  * 无MVP的activity基类
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements LifecycleOwner {
     protected final String TAG = this.getClass().getSimpleName();
     protected Activity mContext;
     protected Bundle savedInstanceState;
+    private LifecycleRegistry mLifecycleRegistry;
 
     /**
      * 封装的findViewByID方法
@@ -31,11 +47,23 @@ public abstract class BaseActivity extends AppCompatActivity {
         return (V) super.findViewById(id);
     }
 
+    protected RxErrorHandler mRxErrorHandler = new RxErrorHandler(e -> {
+        if (e.code == UNAUTHORIZED || e.code == AUTHORIZEDTIMEOUT||e.code == UNKNOWN) {
+            PreferencesUtils.remove(SESSION_ID);
+            Intent  intent = new  Intent(mContext, LoginActivity.class);
+            intent.putExtra("isLoginOut", true);
+            intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        } else {
+            showToast(e.getMessage());
+        }
+    });
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.savedInstanceState = savedInstanceState;
-        ScreenAdaptationUtil.setCustomDensity(this, BaseApplication.getInstance());
+        ScreenAdaptationUtil.setCustomDensity(this, App.app);
        /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             View decorView = getWindow().getDecorView();
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -43,26 +71,48 @@ public abstract class BaseActivity extends AppCompatActivity {
             decorView.setSystemUiVisibility(option);
             getWindow().setStatusBarColor(getResources().getColor(R.color.statusBarColor));
         }*/
-        if (getLayout() != 0) {
-            setContentView(getLayout());
-        }
+
+
+        setView();
+/*        getLifecycle().addObserver(new GenericLifecycleObserver() {
+            @Override
+            public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
+
+            }
+        });*/
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mContext = this;
-        onViewCreated();
+        initView();
         ViewManager.getInstance().addActivity(this);
         initEventAndData();
     }
 
-    protected void showShortToast(String msg) {
+    protected void setView() {
+        if (getLayout() != 0) {
+            setContentView(getLayout());
+        }
+    }
+
+
+    /**
+     * 显示一个短toast
+     *
+     * @param msg
+     */
+    public void showToast(CharSequence msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
-    protected void showLongToast(String msg) {
+
+    /**
+     * 显示一个长toast
+     *
+     * @param msg 要显示的字符串
+     */
+    protected void showLongToast(CharSequence msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
-
-    protected  void onViewCreated() {
-
-    }
 
     @Override
     protected void onDestroy() {
@@ -71,6 +121,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected abstract int getLayout();
+
+    protected abstract void initView();
 
     protected abstract void initEventAndData();
 
@@ -81,26 +133,41 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param fragment
      * @param frameId
      */
-    protected void addFragment(BaseFragment fragment, @IdRes int frameId) {
+    public void addFragment(BaseFragment fragment, @IdRes int frameId) {
         Utils.checkNotNull(fragment);
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(frameId, fragment, fragment.getClass().getSimpleName())
-                .addToBackStack(fragment.getClass().getSimpleName())
                 .commitAllowingStateLoss();
+    }
 
+    /**
+     * 添加fragment
+     *
+     * @param fragment
+     * @param frameId
+     */
+    public void addFragment(BaseFragment fragment, @IdRes int frameId, @AnimatorRes @AnimRes int enter,
+                            @AnimatorRes @AnimRes int exit) {
+        Utils.checkNotNull(fragment);
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(enter, exit)
+                .add(frameId, fragment, fragment.getClass().getSimpleName())
+                .commitAllowingStateLoss();
     }
 
 
     /**
      * 替换fragment
+     *
      * @param fragment
      * @param frameId
      */
-    protected void replaceFragment(BaseFragment fragment, @IdRes int frameId) {
+    public void replaceFragment(BaseFragment fragment, @IdRes int frameId) {
         Utils.checkNotNull(fragment);
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(frameId, fragment, fragment.getClass().getSimpleName())
-                .addToBackStack(fragment.getClass().getSimpleName())
                 .commitAllowingStateLoss();
 
     }
@@ -108,24 +175,51 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 隐藏fragment
+     *
      * @param fragment
      */
-    protected void hideFragment(BaseFragment fragment) {
+    public void hideFragment(BaseFragment fragment, @AnimatorRes @AnimRes int enter,
+                                @AnimatorRes @AnimRes int exit) {
         Utils.checkNotNull(fragment);
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(enter, exit)
                 .hide(fragment)
                 .commitAllowingStateLoss();
+    }
 
+    /**
+     * 隐藏fragment
+     *
+     * @param fragment
+     */
+    public void hideFragment(BaseFragment fragment) {
+        Utils.checkNotNull(fragment);
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                .hide(fragment)
+                .commitAllowingStateLoss();
     }
 
 
     /**
      * 显示fragment
+     *
      * @param fragment
      */
-    protected void showFragment(BaseFragment fragment) {
+    public void showFragment(BaseFragment fragment) {
+        showFragment(fragment, R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    /**
+     * 显示fragment
+     *
+     * @param fragment
+     */
+    public void showFragment(BaseFragment fragment, @AnimatorRes @AnimRes int enter,
+                                @AnimatorRes @AnimRes int exit) {
         Utils.checkNotNull(fragment);
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(enter, exit)
                 .show(fragment)
                 .commitAllowingStateLoss();
 
@@ -134,11 +228,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 移除fragment
+     *
      * @param fragment
      */
-    protected void removeFragment(BaseFragment fragment) {
+    public void removeFragment(BaseFragment fragment) {
         Utils.checkNotNull(fragment);
         getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                 .remove(fragment)
                 .commitAllowingStateLoss();
 
@@ -148,7 +244,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 弹出栈顶部的Fragment
      */
-    protected void popFragment() {
+    public void popFragment() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
             getSupportFragmentManager().popBackStack();
         } else {
@@ -159,12 +255,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 带参数跳转
+     *
      * @param cls
      * @param bundle
      */
-    protected void goActivity(Class<?> cls,@Nullable Bundle bundle){
-        Intent intent = new Intent(this,cls);
-        if(bundle != null){
+    public void goActivity(Class<?> cls, @Nullable Bundle bundle) {
+        Intent intent = new Intent(this, cls);
+        if (bundle != null) {
             intent.putExtras(bundle);
         }
         startActivity(intent);
@@ -172,10 +269,32 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 不带参数跳转
+     *
      * @param cls
      */
-    protected void goActivity(Class<?> cls){
-        goActivity(cls,null);
+    public void goActivity(Class<?> cls) {
+        goActivity(cls, null);
     }
 
+    /**
+     * [含有Bundle通过Class打开编辑界面]
+     *
+     * @param cls
+     * @param bundle
+     * @param requestCode
+     */
+    public void startActivityForResult(@NonNull Class<?> cls, @NonNull Bundle bundle,
+                                       @NonNull int requestCode) {
+        Intent intent = new Intent();
+        intent.setClass(this, cls);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, requestCode);
+    }
+
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        this.finish();
+        return super.onSupportNavigateUp();
+    }
 }

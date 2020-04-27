@@ -1,16 +1,27 @@
 package com.marlon.module.common.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
+
+import com.marlon.module.common.utils.PreferencesUtils;
 import com.marlon.module.common.utils.Utils;
+import com.marlon.retrofitclent.handler.RxErrorHandler;
+
+import org.greenrobot.greendao.annotation.NotNull;
+
+import static com.bumptech.glide.load.HttpException.UNKNOWN;
+import static com.marlon.retrofitclent.exception.ResponeException.AUTHORIZEDTIMEOUT;
+import static com.marlon.retrofitclent.exception.ResponeException.UNAUTHORIZED;
+
 
 
 /**
@@ -20,12 +31,21 @@ import com.marlon.module.common.utils.Utils;
 
 public abstract class BaseFragment extends Fragment {
     public final String TAG = this.getClass().getSimpleName();
-    protected View mView;
+    protected View mRootView = null;
     protected BaseActivity mActivity;
     protected Context mContext;
-
     protected boolean isInited = false;
-    protected LayoutInflater inflater;
+    protected RxErrorHandler mRxErrorHandler = new RxErrorHandler(e -> {
+        if (e.code == UNAUTHORIZED || e.code == AUTHORIZEDTIMEOUT||e.code == UNKNOWN) {
+            PreferencesUtils.remove(SESSION_ID);
+            Intent  intent = new  Intent(mContext, LoginActivity.class);
+            intent.putExtra("isLoginOut", true);
+            intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        } else {
+            showShortToast(e.getMessage());
+        }
+    });
 
     @Override
     public void onAttach(Context context) {
@@ -36,16 +56,29 @@ public abstract class BaseFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        this.inflater = inflater;
-        mView = inflater.inflate(getLayoutId(), null);
-        return mView;
+    public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (mRootView == null) {
+            mRootView = inflater.inflate(getLayout(), container, false);
+        }
+        return mRootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        initEventAndData();
+        init();
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            if (!isInited) {
+                isInited = true;
+                initData();
+            }
+        }
+
     }
 
 
@@ -57,13 +90,17 @@ public abstract class BaseFragment extends Fragment {
     protected void showShortToast(String msg) {
         Toast.makeText(this.getContext(), msg, Toast.LENGTH_SHORT).show();
     }
+
     protected void showLongToast(String msg) {
         Toast.makeText(this.getContext(), msg, Toast.LENGTH_LONG).show();
     }
 
-    protected abstract int getLayoutId();
+    protected abstract int getLayout();
 
-    protected abstract void initEventAndData();
+    protected abstract void init();
+
+    public void initData() {
+    }
 
     /**
      * 获取宿主Activity
@@ -73,6 +110,7 @@ public abstract class BaseFragment extends Fragment {
     protected BaseActivity getHoldingActivity() {
         return mActivity;
     }
+
 
     /**
      * 添加fragment

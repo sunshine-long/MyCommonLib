@@ -88,4 +88,5 @@ dependencies {
 
     api deps.butterknife
     annotationProcessor deps.butterknife_compiler
+    implementation project(path: ':networklib')
 }

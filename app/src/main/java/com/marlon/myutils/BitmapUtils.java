@@ -11,13 +11,13 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import net.uwonders.tobaccodemo.constent.AppConstent;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import static com.marlon.module.common.config.AppConfig.IMAGE_SAVE_FILE;
 
 /**
  * @author Marlon
@@ -73,8 +73,8 @@ public class BitmapUtils {
         return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(selectedImage), null, o2);
     }
 
-    public static void saveBitmap(final Bitmap bitmap, final String filename) {
-        File file = CommonUtils.createImageFile(AppConstent.IMAGE_SAVE_FILE, filename);
+    public static void saveBitmap(Context context,final Bitmap bitmap, final String filename) {
+        File file = FileUtils.createImageFile(context,IMAGE_SAVE_FILE, filename);
         try {
             final FileOutputStream out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);

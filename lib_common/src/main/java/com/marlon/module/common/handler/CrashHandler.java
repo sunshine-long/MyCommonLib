@@ -1,179 +1,98 @@
 package com.marlon.module.common.handler;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Environment;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.marlon.module.common.utils.CommonUtils;
+import com.autonavi.amap.mapcore.FileUtil;
+import com.marlon.module.common.base.ViewManager;
+import com.marlon.module.common.javabean.CrashLog;
+import com.marlon.module.common.utils.AppUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * 全局异常捕获
- * Created by sunshine on 2017/3/20.
+ * Created by 康龙 on 2017/11/4.
  */
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
-    /**
-     * 系统默认UncaughtExceptionHandler
-     */
-    private Thread.UncaughtExceptionHandler mDefaultHandler;
 
-    /**
-     * context
-     */
+    private Thread.UncaughtExceptionHandler mDefaultHandler;
+    // CrashHandler实例
+    private static CrashHandler INSTANCE = new CrashHandler();
+    // 程序的Context对象
     private Context mContext;
 
-    /**
-     * 存储异常和参数信息
-     */
-    private Map<String, String> paramsMap = new HashMap<>();
-
-    /**
-     * 格式化时间
-     */
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-
-    private String TAG = this.getClass().getSimpleName();
-
-    private static CrashHandler mInstance;
-
     private CrashHandler() {
+    }
 
+    public static CrashHandler getInstance() {
+        return INSTANCE;
     }
 
     /**
-     * 获取CrashHandler实例
+     * 初始化
+     *
+     * @param context
      */
-    public static synchronized CrashHandler getInstance() {
-        if (null == mInstance) {
-            mInstance = new CrashHandler();
-        }
-        return mInstance;
-    }
-
     public void init(Context context) {
         mContext = context;
+        // 获取系统默认的UncaughtException处理
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
-        //设置该CrashHandler为系统默认的
+        // 设置该CrashHandler为程序的默认处理
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
     /**
-     * uncaughtException 回调函数
+     * 异常捕获
      */
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        if (!handleException(ex) && mDefaultHandler != null) {//如果自己没处理交给系统处理
+        if (!handleException(ex) && mDefaultHandler != null) {
+            // 如果用户没有处理则让系统默认的异常处理器来处
             mDefaultHandler.uncaughtException(thread, ex);
-        } else {//自己处理
-            try {//延迟3秒杀进程
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                Log.e(TAG, "error : " + e);
-            }
-            android.os.Process.killProcess(android.os.Process.myPid());
-            //退出程序
-//            System.exit(0);
+        } else {
+            // 跳转到崩溃提示Activity
+//            Intent intent =
+//                    new Intent(mContext, LoginActivity.class);
+            ViewManager.getInstance().exitApp(App.app);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            mContext.startActivity(intent);
+//            System.exit(0);// 关闭已奔溃的app进程
         }
-
     }
 
     /**
-     * 收集错误信息.发送到服务器
+     * 自定义错误捕获
      *
-     * @return 处理了该异常返回true, 否则false
+     * @param ex
+     * @return true:如果处理了该异常信息;否则返回false.
      */
     private boolean handleException(Throwable ex) {
         if (ex == null) {
             return false;
         }
-        //收集设备参数信息
-        collectDeviceInfo(mContext);
-        //添加自定义信息
-        addCustomInfo();
-        //使用Toast来显示异常信息
-        new Thread() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                Toast.makeText(mContext, "程序出现异常，正在收集异常信息，完成后将自动退出。。。", Toast.LENGTH_LONG).show();
-                Looper.loop();
-            }
-        }.start();
-        //保存日志文件
-        saveCrashInfo2File(ex);
+        uploadCrash(ex);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // 收集错误信息
+        getCrashInfo(ex);
         return true;
     }
 
-
     /**
-     * 收集设备参数信息
-     *
-     * @param ctx
-     */
-    public void collectDeviceInfo(Context ctx) {
-        //获取versionName,versionCode
-        try {
-            PackageManager pm = ctx.getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), PackageManager.GET_ACTIVITIES);
-            if (pi != null) {
-                String versionName = pi.versionName == null ? "null" : pi.versionName;
-                String versionCode = pi.versionCode + "";
-                paramsMap.put("versionName", versionName);
-                paramsMap.put("versionCode", versionCode);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "an error occured when collect package info:" + e);
-        }
-        //获取所有系统信息
-        Field[] fields = Build.class.getDeclaredFields();
-        for (Field field : fields) {
-            try {
-                field.setAccessible(true);
-                paramsMap.put(field.getName(), field.get(null).toString());
-            } catch (Exception e) {
-                Log.e(TAG, "an error occured when collect crash info:" + e);
-            }
-        }
-    }
-
-    /**
-     * 添加自定义参数
-     */
-    private void addCustomInfo() {
-
-    }
-
-    /**
-     * 保存错误信息到文件中
-     *
+     * 收集要上传的日志存在SharedPreferences
      * @param ex
-     * @return 返回文件名称, 便于将文件传送到服务器
      */
-    private String saveCrashInfo2File(Throwable ex) {
-
-        StringBuffer sb = new StringBuffer();
-        for (Map.Entry<String, String> entry : paramsMap.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            sb.append(key + "=" + value + "\n");
-        }
-
+    private void uploadCrash(Throwable ex) {
         Writer writer = new StringWriter();
         PrintWriter printWriter = new PrintWriter(writer);
         ex.printStackTrace(printWriter);
@@ -183,22 +102,67 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             cause = cause.getCause();
         }
         printWriter.close();
-        String result = writer.toString();
-        sb.append(result);
-        try {
-            long timestamp = System.currentTimeMillis();
-            String time = format.format(new Date());
-            String fileName = "crash-" + time + "-" + timestamp + ".log";
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                File file = CommonUtils.createImageFile(  "/crash_log", fileName);
-                FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());
-                fos.write(sb.toString().getBytes());
-                fos.close();
-            }
-            return fileName;
-        } catch (Exception e) {
-            Log.e(TAG, "an error occured while writing file...:" + e);
+        String errorMessage = writer.toString();
+        CrashLog crashLog = new CrashLog();
+        crashLog.setAppVersion("APP版本:"+ AppUtils.getAppInfo(App.app).getVersionCode());
+        crashLog.setCreate_date(getNowTime());
+        UserBean user = PreferencesHelper.Companion.getUserInfo();
+        if (user != null){
+            crashLog.setUserId(user.getLoginCode());
         }
-        return null;
+        crashLog.setDeviceType(AppUtils.getDeviceBrand());
+        crashLog.setDeviceVendor(AppUtils.getSystemModel());
+        crashLog.setSystemVersion(AppUtils.getSystemVersion());
+        crashLog.setLog(errorMessage);
+        PreferencesHelper.Companion.putCrashLog(crashLog);
     }
+
+    /**
+     * 收集错误信息
+     *
+     * @param ex
+     */
+    private void getCrashInfo(Throwable ex) {
+        Writer writer = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(writer);
+        String time = getNowTime();
+        printWriter.println(TimeUtil.getNowDate());
+        UserBean user = PreferencesHelper.Companion.getUserInfo();
+        if (user != null){
+            printWriter.println("用户手机号:"+user.getLoginCode());
+        }
+        printWriter.println("APP版本:"+AppUtils.getAppInfo(App.app).getVersionCode());
+        printWriter.println("系统版本:"+AppUtils.getSystemVersion());
+        printWriter.println("手机型号:"+AppUtils.getSystemModel());
+        printWriter.println("手机厂商:"+AppUtils.getDeviceBrand());
+        ex.printStackTrace(printWriter);
+        Throwable cause = ex.getCause();
+        while (cause != null) {
+            cause.printStackTrace(printWriter);
+            cause = cause.getCause();
+        }
+        printWriter.close();
+        String errorMessage = writer.toString();
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            String mFilePath = Environment.getExternalStorageDirectory()
+                    + File.separator+ AppUtils.getAppInfo(App.app).getName()
+                    + File.separator + "errorInfo"
+                    + File.separator+time+"error.txt";
+            FileUtil.writeFileToSDCardFromString(errorMessage,mFilePath);
+            Log.i("msg", "哦豁 存好了...");
+        } else {
+            //
+
+           Log.i("msg", "哦豁，说好的SD呢...");
+        }
+
+    }
+    //获取当前时间
+    private String getNowTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// HH:mm:ss
+        Date date = new Date(System.currentTimeMillis());
+        return simpleDateFormat.format(date);
+    }
+
+
 }

@@ -21,4 +21,10 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">false</item>
     </style>
+
+
+    <style name="pop_Anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pop_in</item>
+        <item name="android:windowExitAnimation">@anim/pop_out</item>
+    </style>
 </resources>

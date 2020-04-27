@@ -1,18 +1,12 @@
 package com.marlon.myutils;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
-
-import com.marlon.myutils.app.App;
-import com.marlon.otherutils.AppUtils;
+import android.util.Log;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-
-import androidx.annotation.NonNull;
-
-import static com.marlon.myutils.CommonUtils.SDCARDPATH;
+import java.io.IOException;
 
 /**
  * @author Marlon
@@ -25,6 +19,8 @@ public class FileUtils {
         throw new UnsupportedOperationException("It's not support");
     }
 
+    private static final String TAG = "CommonUtils";
+
     /**
      * 创建File对象，对应于data/data/${packageName}/cache/fileName.
      *
@@ -32,22 +28,42 @@ public class FileUtils {
      * @return File
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static File createFile(String fileName) {
-        return createFile(AppUtils.getAppInfo(App.getInstance()).getName(), fileName);
+    public static File createImageFile(Context context,String fileName) {
+        return createImageFile(context,null, fileName);
     }
 
-
-    public static File createFile(String perent, String fileName) {
-        File outDir = new File(SDCARDPATH + perent);
+    /**
+     * 自定义文件存储路径
+     *
+     * @param perent
+     * @param fileName
+     * @return
+     */
+    public static File createImageFile(Context context,String perent, String fileName) {
+        String perentPath = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            perentPath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath() + File.separator + perent;
+        } else {
+            perentPath = "" + File.separator + perent;
+        }
+        File outDir = new File(perentPath);
         if (!outDir.exists()) {
             outDir.mkdirs();
         }
-        return new File(outDir, fileName);
+        File file = new File(outDir, fileName);
+        try {
+            if (!file.createNewFile()) {
+                Log.e(TAG, "createImagePathUri: File already exists");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
 
     /**
-     * 删除文件夹
+     * Android 10 之前删除文件夹
      *
      * @param root
      */
@@ -82,50 +98,6 @@ public class FileUtils {
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             deleteAllFiles(context.getExternalCacheDir());
-        }
-    }
-
-    /**
-     * 将Assets中的文件Copy到SD卡中
-     *
-     * @param context 上下文
-     * @param srcPath assets中的文件名/或者文件夹
-     * @param dstPath 要存储到SD卡的文件路径
-     * @return
-     */
-    public static boolean copyAssetsToDst(Context context, @NonNull String srcPath, @NonNull String dstPath) {
-        try {
-            String fileNames[] = context.getAssets().list(srcPath);
-            if (fileNames.length > 0) {
-                File file = createFile(dstPath);
-                if (!file.exists()) {
-                    file.mkdirs();
-                }
-                for (String fileName : fileNames) {
-                    // assets 文件夹下的目录
-                    if (!srcPath.equals("")) {
-                        copyAssetsToDst(context, srcPath + File.separator + fileName, dstPath + File.separator + fileName);
-                    } else { // assets 文件夹
-                        copyAssetsToDst(context, fileName, dstPath + File.separator + fileName);
-                    }
-                }
-            } else {
-                File outFile = createFile(dstPath);
-                InputStream is = context.getAssets().open(srcPath);
-                FileOutputStream fos = new FileOutputStream(outFile);
-                byte[] buffer = new byte[1024];
-                int byteCount;
-                while ((byteCount = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, byteCount);
-                }
-                fos.flush();
-                is.close();
-                fos.close();
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
         }
     }
 

@@ -1,6 +1,7 @@
 package com.marlon.myutils;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,12 +9,13 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
-import android.widget.Toast;
 
+import com.marlon.module.common.utils.CommonUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 import com.yanzhenjie.permission.AndPermission;
@@ -54,6 +56,10 @@ public class MyCameraUtils {
     public static Uri cropImageUri;
 
     private Uri sourceUri;
+    //Android 10 之前用于存储文件的路径
+    public static File imageFile;
+    // 判断是否是Android 10 以上手机
+    public static boolean isAndroidQ = Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
 
     /**
      * 打开相机,拍照后返回存入URI
@@ -152,22 +158,36 @@ public class MyCameraUtils {
      * @return
      */
     public static Uri createImagePathUri(Context context) {
-        Uri imageFilePath = null;
-        File file = CommonUtils.createImageFile("IMG" + SystemClock.uptimeMillis() + ".jpg");
-        try {
-            file.createNewFile();
+       File imageFile = CommonUtils.createImageFile("IMG" + SystemClock.uptimeMillis() + ".jpg");
+        Uri imageFileUri = null;
+        if (isAndroidQ) {
+            imageFileUri = createImageUri(context);
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                String applicationid = AppUtils.getAppInfo(context).getPackageName();
-                imageFilePath = FileProvider.getUriForFile(context, applicationid + ".provider", file);
+                String packageName = context.getApplicationContext().getPackageName();
+                imageFileUri = FileProvider.getUriForFile(context, packageName + ".fileprovider", imageFile);
             } else {
-                imageFilePath = Uri.fromFile(file);
+                imageFileUri = Uri.fromFile(imageFile);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(context.getApplicationContext(), "文件存储路径异常", Toast.LENGTH_SHORT).show();
         }
-        return imageFilePath;
+        return imageFileUri;
     }
+
+    /**
+     * 创建图片地址uri,用于保存拍照后的照片 Android 10以后使用这种方法
+     */
+    private static Uri createImageUri(Context context) {
+        String status = Environment.getExternalStorageState();
+        ContentValues contentValues = new ContentValues();
+        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        } else {
+            return context.getContentResolver().insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, contentValues);
+        }
+
+    }
+
 
     /**
      * 获取相机权限

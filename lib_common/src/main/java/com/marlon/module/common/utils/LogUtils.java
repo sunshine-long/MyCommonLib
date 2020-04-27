@@ -1,6 +1,7 @@
 package com.marlon.module.common.utils;
 
-import com.orhanobut.logger.Logger;
+
+import android.util.Log;
 
 /**
  * @author KangLong
@@ -17,7 +18,7 @@ public class LogUtils {
      */
     public static void d(String tag, String msg) {
         if (ISDEBUG) {
-            Logger.t(tag).d(msg);
+            Log.d(tag,msg);
         }
     }
 
@@ -26,7 +27,7 @@ public class LogUtils {
      */
     public static void i(String tag, String msg) {
         if (ISDEBUG) {
-            Logger.t(tag).i(msg);
+            Log.i(tag,msg);
 
         }
     }
@@ -37,7 +38,7 @@ public class LogUtils {
      */
     public static void w(String tag, String msg) {
         if (ISDEBUG) {
-            Logger.t(tag).w(msg);
+            Log.w(tag,msg);
         }
     }
 
@@ -46,7 +47,7 @@ public class LogUtils {
      */
     public static void e(String tag, String msg) {
         if (ISDEBUG) {
-            Logger.t(tag).e(msg);
+            Log.e(tag,msg);
         }
     }
 
